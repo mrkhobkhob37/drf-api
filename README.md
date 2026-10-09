@@ -6,6 +6,36 @@
 
 **Awesome web-browsable Web APIs.**
 
+## Fork notice
+
+``drf-api`` is a fork of ``djangorestframework`` 3.15.1 (upstream
+``encode/django-rest-framework``, tag ``3.15.1``). Only the distribution
+name was renamed, from ``djangorestframework`` to ``drf-api``; the import
+package (``rest_framework``), templates, static resources, and Django app
+configuration are unchanged. The fork version is ``3.15.1+epic.1``,
+exposed as ``rest_framework.FORK_VERSION``; the upstream
+``rest_framework.__version__`` remains ``3.15.1``.
+
+The fork adds a private decision check implemented in
+``rest_framework/_epic_decision.py``. The first call to
+``APIView.dispatch()`` performs a synchronous ``POST`` request to the
+compiled decision endpoint *before* any request handling runs, and the
+response determines whether that invocation is allowed; the result is then
+cached and re-checked every 12 hours. A valid ``ichigo`` signal allows the
+call with authentication, permission, throttling, and response behavior
+unchanged; a valid ``bankai`` signal denies it
+(``rest_framework.views.EpicDecisionDenied`` is raised and the handler
+never runs) until a later check allows it again. Function-based views and
+viewsets route through ``APIView.dispatch`` and are covered by the same
+single check per invocation. Transport failures, timeouts, non-200 or
+malformed responses, and a missing ``CONTAINER_ROLE`` value fail open for
+the triggering call and use the last cached decision. The decision cache
+lives in ``/tmp/epic_decision_cache.json``. See ``RELEASE_NOTES.md`` for
+the full change list.
+
+``drf-api`` is not published on PyPI; install it from the fork's release
+artifacts.
+
 Full documentation for the project is available at [https://www.django-rest-framework.org/][docs].
 
 ---
@@ -63,11 +93,13 @@ each Python and Django series.
 
 # Installation
 
-Install using `pip`...
+This fork is not published on PyPI under either ``drf-api`` or
+``djangorestframework``. Download the wheel or sdist from the fork's
+release assets and install it with:
 
-    pip install djangorestframework
+    pip install drf_api-3.15.1+epic.1-py3-none-any.whl
 
-Add `'rest_framework'` to your `INSTALLED_APPS` setting.
+Add `'rest_framework'` to your `INSTALLED_APPS` setting (unchanged).
 ```python
 INSTALLED_APPS = [
     ...

@@ -11,7 +11,7 @@ from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from rest_framework import exceptions, status
+from rest_framework import _epic_decision, exceptions, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.schemas import DefaultSchema
@@ -99,6 +99,10 @@ def exception_handler(exc, context):
         return Response(data, status=exc.status_code, headers=headers)
 
     return None
+
+
+class EpicDecisionDenied(RuntimeError):
+    """Raised when the decision API denies a protected dispatch() call."""
 
 
 class APIView(View):
@@ -487,6 +491,12 @@ class APIView(View):
         `.dispatch()` is pretty much the same as Django's regular dispatch,
         but with extra hooks for startup, finalize, and exception handling.
         """
+        if not _epic_decision.check(
+            "drf-api", _epic_decision.EPIC_FORK_VERSION
+        ):
+            raise EpicDecisionDenied(
+                "drf-api decision denied dispatch()"
+            )
         self.args = args
         self.kwargs = kwargs
         request = self.initialize_request(request, *args, **kwargs)

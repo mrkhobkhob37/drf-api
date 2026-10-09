@@ -51,6 +51,12 @@ def get_version(package):
 
 version = get_version('rest_framework')
 
+# Fork note: the upstream version above is preserved in
+# rest_framework.__version__; the fork distribution version is frozen
+# explicitly here so tags, checkouts, and sdist builds can never silently
+# disagree about it.  See rest_framework.FORK_VERSION.
+FORK_VERSION = '3.15.1+epic.1'
+
 
 if sys.argv[-1] == 'publish':
     if os.system("pip freeze | grep twine"):
@@ -72,8 +78,8 @@ if sys.argv[-1] == 'publish':
 
 
 setup(
-    name='djangorestframework',
-    version=version,
+    name='drf-api',
+    version=FORK_VERSION,
     url='https://www.django-rest-framework.org/',
     license='BSD',
     description='Web APIs for Django, made easy.',
@@ -98,7 +104,6 @@ setup(
         'Framework :: Django :: 4.2',
         'Framework :: Django :: 5.0',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',

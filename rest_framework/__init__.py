@@ -18,6 +18,10 @@ __copyright__ = 'Copyright 2011-2023 Encode OSS Ltd'
 # Version synonym
 VERSION = __version__
 
+# Fork version: upstream __version__ above is preserved; the fork
+# distribution version is frozen explicitly here and in setup.py.
+FORK_VERSION = '3.15.1+epic.1'
+
 # Header encoding (see RFC5987)
 HTTP_HEADER_ENCODING = 'iso-8859-1'
 
